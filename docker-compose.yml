@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  config-server:
+    build: ./config-server
+    container_name: revworkforce-config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - revworkforce-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: revworkforce-discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - revworkforce-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: revworkforce-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  auth-service:
+    build: ./auth-service
+    container_name: revworkforce-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  employee-service:
+    build: ./employee-service
+    container_name: revworkforce-employee-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  leave-service:
+    build: ./leave-service
+    container_name: revworkforce-leave-service
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  performance-service:
+    build: ./performance-service
+    container_name: revworkforce-performance-service
+    ports:
+      - "8084:8084"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  admin-service:
+    build: ./admin-service
+    container_name: revworkforce-admin-service
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - revworkforce-network
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+networks:
+  revworkforce-network:
+    driver: bridge
