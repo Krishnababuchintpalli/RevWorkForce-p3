@@ -43,10 +43,10 @@ public class RouteConfig {
                         .uri("lb://admin-service"))
 
                 // Users alias route - maps /api/users/** to /api/employees/** (employee-service)
-                .route("users-alias", r -> r.path("/api/users/**")
+                .route("users-alias", r -> r.path("/api/users", "/api/users/**")
                         .filters(f -> f
                                 .filter(jwtFilter)
-                                .rewritePath("/api/users/(?<segment>.*)", "/api/employees/${segment}"))
+                                .rewritePath("/api/users(?<segment>/?.*)", "/api/employees${segment}"))
                         .uri("lb://employee-service"))
 
                 .build();
