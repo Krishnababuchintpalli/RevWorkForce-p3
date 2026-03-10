@@ -42,12 +42,24 @@ public class RouteConfig {
                         .filters(f -> f.filter(jwtFilter))
                         .uri("lb://admin-service"))
 
-                // Users alias route - maps /api/users/** to /api/employees/** (employee-service)
-                .route("users-alias", r -> r.path("/api/users", "/api/users/**")
+                // User Notifications - route to admin-service (must be before /api/users/**)
+                .route("user-notifications", r -> r.path("/api/users/notifications/**")
                         .filters(f -> f
                                 .filter(jwtFilter)
-                                .rewritePath("/api/users(?<segment>/?.*)", "/api/employees${segment}"))
+                                .rewritePath("/api/users/notifications(?<segment>/?.*)", "/api/admin/notifications${segment}"))
+                        .uri("lb://admin-service"))
+
+                // User Team - route to employee-service (must be before /api/users/**)
+                .route("user-team", r -> r.path("/api/users/team")
+                        .filters(f -> f
+                                .filter(jwtFilter)
+                                .rewritePath("/api/users/team", "/api/employees/team"))
                         .uri("lb://employee-service"))
+
+                // Users Service - routes to auth-service for user management
+                .route("users-service", r -> r.path("/api/users", "/api/users/**")
+                        .filters(f -> f.filter(jwtFilter))
+                        .uri("lb://auth-service"))
 
                 .build();
     }

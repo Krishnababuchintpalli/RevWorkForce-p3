@@ -40,11 +40,11 @@ public class PerformanceController {
     }
 
     @GetMapping("/team")
-    public ResponseEntity<TeamReviewResponse> getTeamReviews(
+    public ResponseEntity<List<PerformanceReviewResponse>> getTeamReviews(
             @RequestHeader("X-User-Id") Long userId,
             @RequestHeader("X-User-Role") String role) {
-        TeamReviewResponse response = performanceService.getTeamReviews(userId, role);
-        return ResponseEntity.ok(response);
+        // Frontend expects a list directly, not wrapped in TeamReviewResponse
+        return ResponseEntity.ok(performanceService.getTeamReviews(userId, role).getReviews());
     }
 
     @PatchMapping("/{id}/submit")

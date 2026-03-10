@@ -134,4 +134,28 @@ public class PerformanceReviewResponse {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    // Frontend compatibility - returns nested employee object
+    public EmployeeInfo getEmployee() {
+        return new EmployeeInfo(employeeId, employeeName);
+    }
+
+    // Inner class for nested employee object
+    public static class EmployeeInfo {
+        private Long id;
+        private String fullName;
+
+        public EmployeeInfo(Long id, String fullName) {
+            this.id = id;
+            this.fullName = fullName;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+    }
 }

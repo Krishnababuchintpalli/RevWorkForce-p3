@@ -55,7 +55,15 @@ public class PerformanceService {
         review.setAccomplishments(request.getAccomplishments());
         review.setAreasOfImprovement(request.getAreasOfImprovement());
         review.setSelfRating(request.getSelfRating());
-        review.setStatus(ReviewStatus.DRAFT);
+        // Support manager/admin creating review with feedback directly
+        review.setManagerFeedback(request.getManagerFeedback());
+        review.setManagerRating(request.getManagerRating());
+        // If manager feedback provided, mark as REVIEWED; otherwise DRAFT
+        if (request.getManagerFeedback() != null || request.getManagerRating() != null) {
+            review.setStatus(ReviewStatus.REVIEWED);
+        } else {
+            review.setStatus(ReviewStatus.DRAFT);
+        }
 
         PerformanceReview savedReview = reviewRepository.save(review);
 

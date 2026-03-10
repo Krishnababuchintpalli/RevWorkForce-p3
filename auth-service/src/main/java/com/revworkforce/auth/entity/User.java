@@ -11,6 +11,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String employeeId;
+
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -26,14 +29,21 @@ public class User {
     @Column(nullable = false)
     private String status; // ACTIVE or INACTIVE
 
+    private String phone;
+
+    private String address;
+
+    private String emergencyContact;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public User() {
     }
 
-    public User(Long id, String email, String password, String fullName, Integer roleId, String status, LocalDateTime createdAt) {
+    public User(Long id, String employeeId, String email, String password, String fullName, Integer roleId, String status, LocalDateTime createdAt) {
         this.id = id;
+        this.employeeId = employeeId;
         this.email = email;
         this.password = password;
         this.fullName = fullName;
@@ -53,6 +63,10 @@ public class User {
     // Getters
     public Long getId() {
         return id;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
     }
 
     public String getEmail() {
@@ -75,6 +89,18 @@ public class User {
         return status;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -82,6 +108,10 @@ public class User {
     // Setters
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
     public void setEmail(String email) {
@@ -104,6 +134,18 @@ public class User {
         this.status = status;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setEmergencyContact(String emergencyContact) {
+        this.emergencyContact = emergencyContact;
+    }
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -115,6 +157,7 @@ public class User {
 
     public static class Builder {
         private Long id;
+        private String employeeId;
         private String email;
         private String password;
         private String fullName;
@@ -124,6 +167,11 @@ public class User {
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder employeeId(String employeeId) {
+            this.employeeId = employeeId;
             return this;
         }
 
@@ -158,7 +206,7 @@ public class User {
         }
 
         public User build() {
-            return new User(id, email, password, fullName, roleId, status, createdAt);
+            return new User(id, employeeId, email, password, fullName, roleId, status, createdAt);
         }
     }
 }

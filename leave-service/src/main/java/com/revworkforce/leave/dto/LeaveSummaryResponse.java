@@ -50,4 +50,17 @@ public class LeaveSummaryResponse {
     public void setRemaining(int remaining) {
         this.remaining = remaining;
     }
+
+    // Frontend compatibility aliases
+    public int getTotalLeaves() {
+        return totalAllocated;
+    }
+
+    public int getRemainingLeaves() {
+        return remaining;
+    }
+
+    public int getPendingApprovals() {
+        return pending;
+    }
 }

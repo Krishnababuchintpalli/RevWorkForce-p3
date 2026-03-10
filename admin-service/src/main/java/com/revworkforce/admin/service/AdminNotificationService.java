@@ -35,7 +35,17 @@ public class AdminNotificationService {
 
     @Transactional
     public AdminNotificationResponse sendNotification(Long senderId, String senderRole, NotificationSendRequest request) {
-        // If recipientId is null, only admins can broadcast
+        // Handle sendToAll flag from frontend
+        if (Boolean.TRUE.equals(request.getSendToAll())) {
+            if (!"ADMIN".equals(senderRole)) {
+                throw new UnauthorizedException("Only administrators can broadcast notifications");
+            }
+            // Broadcast to all - reuse broadcast logic but return single response
+            List<AdminNotificationResponse> responses = broadcastNotification(senderRole, request.getMessage());
+            return responses.isEmpty() ? null : responses.get(0);
+        }
+
+        // If recipientId is null and not sendToAll, only admins can broadcast
         if (request.getRecipientId() == null && !"ADMIN".equals(senderRole)) {
             throw new UnauthorizedException("Only administrators can broadcast notifications");
         }
@@ -89,17 +99,18 @@ public class AdminNotificationService {
     }
 
     @Transactional
-    public void markAsRead(Long notificationId, Long userId) {
+    public AdminNotificationResponse updateReadStatus(Long notificationId, Long userId, boolean read) {
         AdminNotification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + notificationId));
 
-        // Ensure user can only mark their own notifications as read
+        // Ensure user can only mark their own notifications
         if (!notification.getUserId().equals(userId)) {
-            throw new UnauthorizedException("You can only mark your own notifications as read");
+            throw new UnauthorizedException("You can only update your own notifications");
         }
 
-        notification.setReadFlag(true);
-        notificationRepository.save(notification);
+        notification.setReadFlag(read);
+        AdminNotification saved = notificationRepository.save(notification);
+        return toResponse(saved);
     }
 
     public long getUnreadCount(Long userId) {

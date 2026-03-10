@@ -23,6 +23,13 @@ public class PerformanceReviewRequest {
     @Max(value = 5, message = "Self rating must be between 1 and 5")
     private Integer selfRating;
 
+    @Size(max = 2000, message = "Manager feedback must not exceed 2000 characters")
+    private String managerFeedback;
+
+    @Min(value = 1, message = "Manager rating must be between 1 and 5")
+    @Max(value = 5, message = "Manager rating must be between 1 and 5")
+    private Integer managerRating;
+
     public PerformanceReviewRequest() {
     }
 
@@ -64,5 +71,21 @@ public class PerformanceReviewRequest {
 
     public void setSelfRating(Integer selfRating) {
         this.selfRating = selfRating;
+    }
+
+    public String getManagerFeedback() {
+        return managerFeedback;
+    }
+
+    public void setManagerFeedback(String managerFeedback) {
+        this.managerFeedback = managerFeedback;
+    }
+
+    public Integer getManagerRating() {
+        return managerRating;
+    }
+
+    public void setManagerRating(Integer managerRating) {
+        this.managerRating = managerRating;
     }
 }

@@ -17,8 +17,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/internal/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // API Gateway handles JWT validation
                 );
 
         return http.build();

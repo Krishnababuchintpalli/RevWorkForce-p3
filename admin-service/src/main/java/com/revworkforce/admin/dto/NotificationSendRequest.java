@@ -11,6 +11,8 @@ public class NotificationSendRequest {
     @Size(max = 1000, message = "Message cannot exceed 1000 characters")
     private String message;
 
+    private Boolean sendToAll = false;
+
     public NotificationSendRequest() {
     }
 
@@ -27,12 +29,25 @@ public class NotificationSendRequest {
         this.recipientId = recipientId;
     }
 
+    // Alias for frontend compatibility
+    public void setRecipientUserId(Long recipientUserId) {
+        this.recipientId = recipientUserId;
+    }
+
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Boolean getSendToAll() {
+        return sendToAll;
+    }
+
+    public void setSendToAll(Boolean sendToAll) {
+        this.sendToAll = sendToAll;
     }
 
     public static Builder builder() {

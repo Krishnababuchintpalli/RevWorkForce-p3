@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -170,5 +172,71 @@ public class AuthServiceImpl implements AuthService {
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    }
+
+    @Override
+    @Transactional
+    public User createUser(AdminCreateUserRequest request) {
+        try {
+            Long.parseLong(request.getEmployeeId().trim());
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Employee ID must be numeric");
+        }
+
+        if (userRepository.existsByEmployeeId(request.getEmployeeId().trim())) {
+            throw new IllegalArgumentException("Employee ID already exists");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail().trim().toLowerCase())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Role role;
+        try {
+            role = Role.valueOf(request.getRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            role = Role.EMPLOYEE;
+        }
+
+        User user = User.builder()
+                .employeeId(request.getEmployeeId().trim())
+                .fullName(request.getFullName().trim())
+                .email(request.getEmail().trim().toLowerCase())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roleId(role.getId())
+                .status("ACTIVE")
+                .build();
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> searchUsers(String query) {
+        return userRepository.searchByNameOrEmployeeId(query);
+    }
+
+    @Override
+    @Transactional
+    public User setUserActive(Long userId, boolean active) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        user.setStatus(active ? "ACTIVE" : "INACTIVE");
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User updateProfile(Long userId, ProfileUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setEmergencyContact(request.getEmergencyContact());
+        return userRepository.save(user);
     }
 }

@@ -245,6 +245,7 @@ public class EmployeeService {
 
         return TeamMemberResponse.builder()
                 .id(employee.getId())
+                .employeeId("EMP-" + employee.getId())
                 .fullName(employee.getFullName())
                 .email(employee.getEmail())
                 .designation(designationName)

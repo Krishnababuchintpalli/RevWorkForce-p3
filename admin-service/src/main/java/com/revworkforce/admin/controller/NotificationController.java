@@ -50,11 +50,12 @@ public class NotificationController {
     }
 
     @PatchMapping("/{id}/read")
-    public ResponseEntity<Void> markAsRead(
+    public ResponseEntity<AdminNotificationResponse> updateReadStatus(
             @RequestHeader("X-User-Id") Long userId,
-            @PathVariable Long id) {
-        notificationService.markAsRead(id, userId);
-        return ResponseEntity.noContent().build();
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "true") boolean read) {
+        AdminNotificationResponse response = notificationService.updateReadStatus(id, userId, read);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/unread/count")

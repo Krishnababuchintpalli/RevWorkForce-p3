@@ -7,5 +7,7 @@ public enum LeaveType {
     MATERNITY,
     PATERNITY,
     BEREAVEMENT,
-    UNPAID
+    UNPAID,
+    CASUAL,
+    PAID
 }

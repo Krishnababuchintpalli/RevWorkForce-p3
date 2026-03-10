@@ -29,6 +29,11 @@ public class AuthResponse {
         return accessToken;
     }
 
+    // Alias for frontend compatibility (frontend expects 'token' instead of 'accessToken')
+    public String getToken() {
+        return accessToken;
+    }
+
     public String getRefreshToken() {
         return refreshToken;
     }
