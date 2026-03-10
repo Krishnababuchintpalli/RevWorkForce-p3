@@ -61,6 +61,7 @@ public class JwtAuthenticationFilter implements GatewayFilter {
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
 
         } catch (Exception e) {
+
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
