@@ -11,6 +11,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String employeeId;
+
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -32,8 +35,9 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String email, String password, String fullName, Integer roleId, String status, LocalDateTime createdAt) {
+    public User(Long id,String employeeId, String email, String password, String fullName, Integer roleId, String status, LocalDateTime createdAt) {
         this.id = id;
+        this.employeeId = employeeId;
         this.email = email;
         this.password = password;
         this.fullName = fullName;
@@ -78,6 +82,13 @@ public class User {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
 
     // Setters
     public void setId(Long id) {
@@ -115,6 +126,7 @@ public class User {
 
     public static class Builder {
         private Long id;
+        private String employeeId;
         private String email;
         private String password;
         private String fullName;
@@ -156,9 +168,13 @@ public class User {
             this.createdAt = createdAt;
             return this;
         }
+        public Builder employeeId(String employeeId) {
+            this.employeeId = employeeId;
+            return this;
+        }
 
         public User build() {
-            return new User(id, email, password, fullName, roleId, status, createdAt);
+            return new User(id, employeeId, email, password, fullName, roleId, status, createdAt);
         }
     }
 }

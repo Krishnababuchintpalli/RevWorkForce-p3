@@ -43,11 +43,9 @@ public class RouteConfig {
                         .uri("lb://admin-service"))
 
                 // Users alias route - maps /api/users/** to /api/employees/** (employee-service)
-                .route("users-alias", r -> r.path("/api/users", "/api/users/**")
-                        .filters(f -> f
-                                .filter(jwtFilter)
-                                .rewritePath("/api/users(?<segment>/?.*)", "/api/employees${segment}"))
-                        .uri("lb://employee-service"))
+                .route("users-service", r -> r.path("/api/users", "/api/users/**")
+                        .filters(f -> f.filter(jwtFilter))
+                        .uri("lb://auth-service"))
 
                 .build();
     }
